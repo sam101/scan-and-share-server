@@ -41,6 +41,10 @@ exports.findAccount = function(username, callback) {
     {
       mongoose.connection.close();
       callback.call(this, result);
+      
+      // Free memory
+      accountModel = null;
+      accountSchema = null;
     }
   });
 }
