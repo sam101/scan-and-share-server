@@ -25,6 +25,7 @@ app.use(express.bodyParser());	// Parse automatically a POST request body in JSO
 // LOGIN request
 app.get('/login', function (req, res)
 {
+	console.log(req.query);
 	res.send();
 });
 

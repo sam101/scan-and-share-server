@@ -6,12 +6,44 @@ var mongoose = require('mongoose');
 /************************************/
 /*			PARAMETERS				*/
 /************************************/
-
+var databaseUri = 'mongodb://localhost:27017/nf28_project';
 
 /************************************/
 /*			DATABASE QUERIES		*/
 /************************************/
+/**
+  * Function which retrieves an account from its username
+  * @param username username 
+  * @param callback Callback function to call when the result is retrieved
+  */
+exports.findAccount = function(username, callback) {
+	mongoose.connect(databaseUri);
 
+  var accountSchema = new mongoose.Schema(
+  {
+    'username': String,
+    'password': String,
+    'email': String,
+    'age': Number,
+    'job': String
+  }  
+  );
+  
+  var accountModel = mongoose.model('account', accountSchema);
+  
+  accountModel.find({}, function(error, result) 
+  {
+    if (error) 
+    {
+      console.log(error);
+    }
+    else
+    {
+      mongoose.connection.close();
+      callback.call(this, result);
+    }
+  });
+}
 /**
  * Function which retrieves a product from its ean ID
  * @param ean Product ID
@@ -19,7 +51,7 @@ var mongoose = require('mongoose');
 */
 exports.findProduct = function (ean, callback)
 {
-	mongoose.connect('mongodb://localhost:27017/nf28_project');
+	mongoose.connect(databaseUri);
 
 	var productSchema = new mongoose.Schema(
 	{
@@ -90,7 +122,7 @@ exports.saveProduct = function (ean, data, callback)
 		photo = data.photo;
 	}
 
-	mongoose.connect('mongodb://localhost:27017/nf28_project');
+	mongoose.connect(databaseUri);
 
 	var productSchema = new mongoose.Schema(
 	{
