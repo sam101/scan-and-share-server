@@ -5,6 +5,7 @@ Server for Scan&amp;Share NF28 project
 
 REST API spec
 ==============
+
 GET
 ---
 * /login (token exchange)
@@ -12,6 +13,8 @@ GET
 * /ean?id=[ID]&comments&startIndex=[N] (10 more comments about the product)
 * /sales (get the first 10 sales)
 * /sales?startIndex=[N] (get the [N,N+10] sales)
+
+
 POST
 ----
 * /register : {"username" : String,
