@@ -13,47 +13,55 @@ var databaseUri = 'mongodb://localhost:27017/nf28_project';
 /************************************/
 /**
   * Function which retrieves an account from its username
-  * @param username username 
+  * @param username username
   * @param callback Callback function to call when the result is retrieved
   */
-exports.findAccount = function(username, callback) {
+exports.findAccount = function(username, callback)
+{
 	mongoose.connect(databaseUri);
 
-  var accountSchema = new mongoose.Schema(
-  {
-    'username': String,
-    'password': String,
-    'email': String,
-    'age': Number,
-    'job': String
-  }  
-  );
-  
-  var accountModel = mongoose.model('account', accountSchema);
-  
-  accountModel.find({}, function(error, result) 
-  {
-    if (error) 
-    {
-      console.log(error);
-    }
-    else
-    {
-      mongoose.connection.close();
-      callback.call(this, result);
-      
-      // Free memory
-      accountModel = null;
-      accountSchema = null;
-    }
-  });
+	var accountSchema = new mongoose.Schema(
+  	{
+    	'username': String,
+    	'password': String,
+    	'email': String,
+    	'age': Number,
+    	'job': String
+  	});
+
+  	try
+	{
+		// Model initialisation
+		module.exports = mongoose.model('account', accountSchema);
+	}
+	catch(error)
+	{
+		// The model 'product' is already initialised
+	}
+
+  	module.exports.find({}, function(error, result)
+  	{
+  		mongoose.connection.close();
+
+    	if (error)
+    	{
+      		console.log(error);
+    	}
+    	else
+    	{
+      		callback.call(this, result);
+    	}
+    	// Free memory
+      	accountModel = null;
+      	accountSchema = null;
+  	});
 }
 /**
  * Function which retrieves a product from its ean ID
  * @param ean Product ID
  * @param callback Callback function calls when there is a result
 */
-exports.findProduct = function (ean, callback)
+exports.findProduct = function(ean, callback)
 {
 	mongoose.connect(databaseUri);
 
@@ -65,28 +73,38 @@ exports.findProduct = function (ean, callback)
 		'types': Array,
 		'gps': Array,
 		'description': String,
-		'photo': String,
+		'photo': {
+			'url': String,
+			'buffer': Buffer,
+			},
 		'rating': Number,
 		'comments': Array
 	});
 
-	var productModel = mongoose.model('product', productSchema);
-
-	productModel.find({}, function (error, result)
+	try
 	{
+		// Model initialisation
+		module.exports = mongoose.model('product', productSchema);
+	}
+	catch(error)
+	{
+		// The model 'product' is already initialised
+	}
+
+	module.exports.find({'ean': ean}, function (error, result)
+	{
+		mongoose.connection.close();
+
 		if(error)
 		{
 			console.log(error);
 		}
 		else
 		{
-			mongoose.connection.close();
 			callback.call(this, result);
-
-			// Free memory
-			productSchema = null;
-			productModel = null;
 		}
+		// Free memory
+		productSchema = null;
 	});
 };
 
@@ -96,13 +114,13 @@ exports.findProduct = function (ean, callback)
  * @param data JSON containing the data of the product
  * @param callback Callback function calls when the save ends and give the httpCode corresponding
 */
-exports.saveProduct = function (ean, data, callback)
+exports.saveProduct = function(ean, data, callback)
 {
 	var description = '';
 	var rating = -1;
 	var comments = [];
 	var types = [];
-	var photo = '';
+	var photo = {};
 
 	/*		Optional fields		*/
 	if(data.description != undefined)
@@ -136,20 +154,31 @@ exports.saveProduct = function (ean, data, callback)
 		'types': Array,
 		'gps': Array,
 		'description': String,
-		'photo': String,
+		'photo': {
+			'url': String,
+			'buffer': Buffer,
+			},
 		'rating': Number,
 		'comments': Array
 	});
 
-	var productModel = mongoose.model('product', productSchema);
+	try
+	{
+		// Model initialisation
+		module.exports = mongoose.model('product', productSchema);
+	}
+	catch(error)
+	{
+		// The model 'product' is already initialised
+	}
 
 	// Product to store
-	var product = new productModel({
+	var product = new module.exports({
 		'ean': ean,
 		'name': data.name,
-		'prices': [data.price],
+		'prices': data.prices,
 		'types': types,
-		'gps': [data.gps],
+		'gps': data.gps,
 		'description': description,
 		'photo': photo,
 		'rating': rating,
@@ -158,6 +187,7 @@ exports.saveProduct = function (ean, data, callback)
 
 	product.save(function (err)
 	{
+		mongoose.connection.close();
 		if(err)
 		{
 			console.log(err);
@@ -170,7 +200,6 @@ exports.saveProduct = function (ean, data, callback)
 
 		// Free memory
 		productSchema = null;
-		productModel = null;
 		product = null;
 	});
 

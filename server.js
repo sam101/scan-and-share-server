@@ -32,8 +32,11 @@ app.get('/login', function (req, res)
 // PRODUCT request
 app.get('/ean', function (req, res)
 {
-	console.log(req.query);
-	res.send();
+	ean.getProduct(req.query.id, function(statusCode, data)
+	{
+		res.statusCode = statusCode;
+		res.send(data);
+	});
 });
 
 // SALES request
