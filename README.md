@@ -10,9 +10,9 @@ GET
 ---
 * /login (token exchange)
 * /ean?id=[ID] (product info + 10 first comments)
-* /ean?id=[ID]&comments&startIndex=[N] (10 more comments about the product)
+* /ean?id=[ID]&commentsstartindex=[N] (10 more comments about the product)
 * /sales (get the first 10 sales)
-* /sales?startIndex=[N] (get the [N,N+10] sales)
+* /sales?startindex=[N] (get the [N,N+10] sales)
 
 
 POST
@@ -24,24 +24,26 @@ POST
                 "job" : String
               }
 * /ean?id=[ID] : {
-                "name" : String, 
+                "name" : String,
                 "price" : double,
-                "GPS": String,
+                "gps": String,
                 "description": String (optionnal),
-                "rating": Integer ([0,5]) (optionnal),
+                "rating": Double ([0,5]) (optionnal),
                 "comment": String (optionnal),
                 "types": String[] (optionnal),
                 "photo": base64 (optionnal)
                }
+               body example => "name=test&description=test&price=0.5&gps=35.2:16.3&comment=toto&types=titi,tutu"
 * /ean?id=[]&comment {
-                      "rating" : Integer ([0,5]),
+                      "rating" : Double ([0,5]),
                       "comment": String (optionnal)
                      }
+                     body example = > "rating=2&comment=comment toto ti tutu"
 * /ean?id=[]&price {
                       "price": Double,
-                      "GPS": String
+                      "gps": String
                    }
-
+                   body example => "price=2.3&gps=21.2:34.3"
 * /sales?id=[ID] : { "price": double,
                      "description" : String
-                   } 
+                   }
