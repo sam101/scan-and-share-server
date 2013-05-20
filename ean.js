@@ -18,7 +18,7 @@ var appKeyPrixing = 'ebe66fca00324b3a989b8a6a81d8e672';
  * @param ean The product ID
  * @param callback Callback function called when a product description (or not) is retrieved
 */
-exports.getProduct = function(ean, callback)
+exports.getProduct = function(ean, startIndex, callback)
 {
 	var product = {};
 
@@ -27,7 +27,7 @@ exports.getProduct = function(ean, callback)
 	{
 		if(result.length != 0)
 		{
-			callback.call(this, 200, result[0]);
+			callback.call(this, 200, commentsSlicer(result[0], startIndex));
 		}
 		else
 		{
@@ -78,14 +78,69 @@ exports.getProduct = function(ean, callback)
 						});
 
 						// Give the product to the client
-						callback.call(this, 200, JSON.stringify(product));
+						callback.call(this, 200, commentsSlicer(JSON.stringify(product), startIndex));
 
 						// Free memory
+						product = null;
 						prixingProduct = null;
 					}
 				}
 			});
 		}
+	});
+}
+
+/**
+ * Function which store a new product in the database
+ * @param ean The product ID
+ * @param data The JSON of the product
+ * @param callback The callback function called when the product is stored in the database
+*/
+exports.storeProduct = function(ean, data, callback)
+{
+	data.gps = [data.gps];
+	data.prices = [parseFloat(data.price)];
+	delete data.price;
+	var photo = {};
+	photo.url = '';
+	photo.buffer = '';
+	data.photo = photo;
+	data.types = data.types.split(',');
+
+	database.saveProduct(ean, data, function(statusCode)
+	{
+		callback.call(this, statusCode);
+
+		// Free memory
+		photo = null;
+	});
+}
+
+/**
+ * Function which stores a new comment in the database
+ * @param ean The product ID
+ * @param data JSON containing the rating and the comment
+ * @param callback The callback function called when the new comment is saved
+*/
+exports.storeComment = function(ean, data, callback)
+{
+	database.saveComment(ean, data, function(statusCode)
+	{
+		callback.call(this, statusCode);
+	});
+}
+
+/**
+ * Function which stores a new price and its GPS location
+ * @param ean The product ID
+ * @param data JSON containing the new price and the GPS location
+ * @param callback The callback function called when the new price is saved
+*/
+exports.storePrice = function(ean, data, callback)
+{
+	database.savePrice(ean, data, function(statusCode)
+	{
+		callback.call(this, statusCode);
 	});
 }
 
@@ -128,3 +183,17 @@ function getPrixingProduct(ean, callback)
 		request = null;
 	});
 }
+
+/**
+ * Function which slices the comments array
+ * @param data The JSON of a product stringified
+ * @param startIndex The beginning of the slicing of the array
+ * @return String The new JSON of the product
+*/
+function commentsSlicer(data, startIndex)
+{
+	var dataParsed = JSON.parse(JSON.stringify(data));
+	dataParsed.comments = dataParsed.comments.slice(startIndex, startIndex + 10);
+	return JSON.stringify(dataParsed);
+}
+

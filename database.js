@@ -117,7 +117,7 @@ exports.findProduct = function(ean, callback)
 exports.saveProduct = function(ean, data, callback)
 {
 	var description = '';
-	var rating = -1;
+	var rating = 0;
 	var comments = [];
 	var types = [];
 	var photo = {};
@@ -210,4 +210,138 @@ exports.saveProduct = function(ean, data, callback)
 	types = null;
 	photo = null;
 };
+
+/**
+ * Function which saves a new comment in the database
+ * @param ean The product ID
+ * @param data JSON containing the rating and the comment
+ * @param callback The callback function called when the new comment is saved
+*/
+exports.saveComment = function(ean, data, callback)
+{
+	mongoose.connect(databaseUri);
+
+	var productSchema = new mongoose.Schema(
+	{
+		'ean': String,
+		'name': String,
+		'prices': Array,
+		'types': Array,
+		'gps': Array,
+		'description': String,
+		'photo': {
+			'url': String,
+			'buffer': Buffer,
+			},
+		'rating': Number,
+		'comments': Array
+	});
+
+	try
+	{
+		// Model initialisation
+		module.exports = mongoose.model('product', productSchema);
+	}
+	catch(error)
+	{
+		// The model 'product' is already initialised
+	}
+
+	module.exports.find({'ean': ean}, function(err, result)
+	{
+		if(err)
+		{
+			mongoose.connection.close();
+			callback.call(this, 500);
+		}
+		else
+		{
+			var product = JSON.parse(JSON.stringify(result[0]));
+			var rating = parseFloat(data.rating);
+			if(product.rating != 0)
+			{
+				rating = (product.rating + parseFloat(data.rating)) / 2;
+			}
+			var update = {};
+
+			if(data.comment != undefined)
+			{
+				update = {'$push': {'comments': data.comment}, '$set': {'rating': rating}};
+			}
+			else
+			{
+				update = {'$set': {'rating': rating}};
+			}
+
+			module.exports.update({'ean': ean}, update, function(err)
+			{
+				mongoose.connection.close();
+				if(err)
+				{
+					callback.call(this, 500);
+				}
+				else
+				{
+					callback.call(this, 200);
+				}
+
+				// Free memory
+				productSchema = null;
+				product = null;
+				rating = null;
+				update = null;
+			});
+		}
+	});
+}
+
+/**
+ * Function which saves a new price and its GPS location in the database
+ * @param ean The product ID
+ * @param data JSON containing the new price and the GPS location
+ * @param callback The callback function called when the new price is saved
+*/
+exports.savePrice = function(ean, data, callback)
+{
+	mongoose.connect(databaseUri);
+
+	var productSchema = new mongoose.Schema(
+	{
+		'ean': String,
+		'name': String,
+		'prices': Array,
+		'types': Array,
+		'gps': Array,
+		'description': String,
+		'photo': {
+			'url': String,
+			'buffer': Buffer,
+			},
+		'rating': Number,
+		'comments': Array
+	});
+
+	try
+	{
+		// Model initialisation
+		module.exports = mongoose.model('product', productSchema);
+	}
+	catch(error)
+	{
+		// The model 'product' is already initialised
+	}
+
+	module.exports.update({'ean': ean}, {'$push': {'gps': data.gps, 'prices': parseFloat(data.price)}}, function(err)
+	{
+		mongoose.connection.close();
+		if(err)
+		{
+			callback.call(this, 500);
+		}
+		else
+		{
+			callback.call(this, 200);
+		}
+	});
+}
 
