@@ -38,6 +38,7 @@ app.get('/ean', function (req, res)
 		ean.getProduct(req.query.id, parseInt(req.query.commentsstartindex), function(statusCode, data)
 		{
 			res.statusCode = statusCode;
+			res.setHeader("Content-Type", "application/json");
 			res.send(data);
 		});
 	}
@@ -47,6 +48,7 @@ app.get('/ean', function (req, res)
 		ean.getProduct(req.query.id, 0, function(statusCode, data)
 		{
 			res.statusCode = statusCode;
+			res.setHeader("Content-Type", "application/json");
 			res.send(data);
 		});
 	}
