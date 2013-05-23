@@ -8,7 +8,7 @@ REST API spec
 
 GET
 ---
-* /login (token exchange)
+* /login?username=[username]&password=[password] (token exchange)
 * /ean?id=[ID] (product info + 10 first comments)
 * /ean?id=[ID]&commentsstartindex=[N] (10 more comments about the product)
 * /sales (get the first 10 sales)
