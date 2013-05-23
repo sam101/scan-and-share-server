@@ -18,43 +18,41 @@ var databaseUri = 'mongodb://localhost:27017/nf28_project';
   */
 exports.findAccount = function(username, callback)
 {
-	mongoose.connect(databaseUri);
+  mongoose.connect(databaseUri);
 
-	var accountSchema = new mongoose.Schema(
-  	{
-    	'username': String,
-    	'password': String,
-    	'email': String,
-    	'age': Number,
-    	'job': String
-  	});
+  var accountSchema = new mongoose.Schema(
+  {
+    'username': String,
+    'password': String,
+    'email': String,
+    'age': Number,
+    'job': String
+  });
+  try
+  {
+    // Model initialisation
+    module.exports = mongoose.model('account', accountSchema);
+  }
+  catch(error)
+  {
+    // The model 'account' is already initialised
+  }
 
-  	try
-	{
-		// Model initialisation
-		module.exports = mongoose.model('account', accountSchema);
-	}
-	catch(error)
-	{
-		// The model 'product' is already initialised
-	}
-
-  	module.exports.find({}, function(error, result)
-  	{
-  		mongoose.connection.close();
-
-    	if (error)
-    	{
-      		console.log(error);
-    	}
-    	else
-    	{
-      		callback.call(this, result);
-    	}
-    	// Free memory
-      	accountModel = null;
-      	accountSchema = null;
-  	});
+  module.exports.find({'username': username}, function(error, result)
+  {
+    mongoose.connection.close();
+    if (error)
+    {
+      console.log(error);
+    }
+    else
+    {
+      callback.call(this, result);
+    }
+    // Free memory
+    accountModel = null;
+    accountSchema = null;
+  });
 }
 /**
  * Function which retrieves a product from its ean ID
