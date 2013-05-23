@@ -25,8 +25,19 @@ app.use(express.bodyParser());	// Parse automatically a POST request body in JSO
 // LOGIN request
 app.get('/login', function (req, res)
 {
-	console.log(req.query);
-	res.send();
+  if (req.query.username != undefined && req.query.password != undefined) {
+    //the user wants to login: we return her the token if it is a success, a 403 error otherwise
+    login.login(req.query.username, req.query.password, function(statusCode, data) {
+      console.log(statusCode, data);
+      res.statusCode = statusCode;
+			res.setHeader("Content-Type", "application/json");
+			res.send(data);
+    });
+  }
+  else {
+    res.statusCode = 404;
+    res.send();  
+  }
 });
 
 // PRODUCT request
@@ -72,6 +83,7 @@ app.get('/sales', function (req, res)
 // REGISTER request
 app.post('/register', function (req, res)
 {
+  console.log(req.query);
 	console.log(req.body);
 	res.send();
 });
