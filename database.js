@@ -2,12 +2,12 @@
 /*			REQUIRES				*/
 /************************************/
 var mongoose = require('mongoose');
-
+var crypto = require('crypto');
+var sha1 = crypto.createHash('sha1');
 /************************************/
 /*			PARAMETERS				*/
 /************************************/
 var databaseUri = 'mongodb://localhost:27017/nf28_project';
-
 /************************************/
 /*			DATABASE QUERIES		*/
 /************************************/
@@ -38,7 +38,7 @@ exports.findAccount = function(username, callback)
     // The model 'account' is already initialised
   }
 
-  module.exports.find({'username': username}, function(error, result)
+  module.exports.findOne({'username': username}, function(error, result)
   {
     mongoose.connection.close();
     if (error)
@@ -55,10 +55,75 @@ exports.findAccount = function(username, callback)
   });
 }
 /**
+  * Function which adds a new user account into the database.
+  * Returns a token for the user 
+  * @param username user username
+  * @param password user password
+  * @param email email address for the user
+  * @param job user current job
+  * @param callback Callback function called when there is a result: (status)
+
+  */
+exports.registerAccount = function(username, password, email, job, callback) 
+{
+  mongoose.connect(databaseUri);
+  //hash the user password
+  var hashedPassword = sha1.digest(username + password);
+   
+  var accountSchema = new mongoose.Schema(
+  {
+    'username': String,
+    'password': String,
+    'email': String,
+    'age': Number,
+    'job': String
+  });
+  
+  try 
+  {
+    module.exports = mongoose.model('account', accountSchema);
+  }
+  catch (err) 
+  {
+    //the model has already been initialized
+  }
+  //check if the account doesn't already exists
+  exports.findAccount(username, function(result) {
+    if (result != null) {
+      callback.call(this, 403, '');
+    }
+    else {
+      //the account doesn't exists: we add it to the database    
+      var account = new module.exports({'username': username, 
+                                       'password': hashedPassword,
+                                       'email': email,
+                                       'age': age,
+                                       'job': job});
+      account.save(function(err) {
+    		mongoose.connection.close();   
+    		if (err) 
+    		{
+		      console.log(err);
+		      callback.call(this, 500);    		
+    		}
+    		else
+    		{
+    		  callback.call(this,200);
+        }     
+        accountSchema = null;
+        account = null;
+      });                                 
+                                       
+    }
+  });
+  
+}
+ 
+/**
  * Function which retrieves a product from its ean ID
  * @param ean Product ID
  * @param callback Callback function calls when there is a result
-*/
+*/  
 exports.findProduct = function(ean, callback)
 {
 	mongoose.connect(databaseUri);
