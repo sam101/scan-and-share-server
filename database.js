@@ -64,35 +64,35 @@ exports.findAccount = function(username, callback)
   * @param callback Callback function called when there is a result: (status)
 
   */
-exports.registerAccount = function(username, password, email, job, callback) 
+exports.registerAccount = function(username, password, email, age, job, callback) 
 {
-  mongoose.connect(databaseUri);
-  //hash the user password
-  var hashedPassword = sha1.digest(username + password);
-   
-  var accountSchema = new mongoose.Schema(
-  {
-    'username': String,
-    'password': String,
-    'email': String,
-    'age': Number,
-    'job': String
-  });
-  
-  try 
-  {
-    module.exports = mongoose.model('account', accountSchema);
-  }
-  catch (err) 
-  {
-    //the model has already been initialized
-  }
   //check if the account doesn't already exists
   exports.findAccount(username, function(result) {
     if (result != null) {
       callback.call(this, 403, '');
     }
     else {
+      mongoose.connect(databaseUri);
+      //hash the user password
+      var hashedPassword = sha1.digest(username + password);
+       
+      var accountSchema = new mongoose.Schema(
+      {
+        'username': String,
+        'password': String,
+        'email': String,
+        'age': Number,
+        'job': String
+      });
+      
+      try 
+      {
+        module.exports = mongoose.model('account', accountSchema);
+      }
+      catch (err) 
+      {
+        //the model has already been initialized
+      }
       //the account doesn't exists: we add it to the database    
       var account = new module.exports({'username': username, 
                                        'password': hashedPassword,
