@@ -27,7 +27,7 @@ exports.getProduct = function(ean, startIndex, callback)
 	{
 		if(result.length != 0)
 		{
-			callback.call(this, 200, commentsSlicer(result[0], startIndex));
+			callback.call(this, 200, commentsSlicer(JSON.stringify(result[0]), startIndex));
 		}
 		else
 		{
@@ -61,15 +61,14 @@ exports.getProduct = function(ean, startIndex, callback)
 						product.prices = [];
 						if(prixingProduct.produit.price != undefined)
 						{
-							product.prices = [parseFloat(prixingProduct.produit.price)];
+							product.prices = [{'price': parseFloat(prixingProduct.produit.price), 'gps': ''}];
 						}
 						product.types = [];
-						product.gps = [];
 						product.photo = {};
 						product.photo.url = prixingProduct.produit.image.url;
 						product.photo.buffer = '';
 						product.rating = 0;
-						product.comment = '';
+						product.comments = [];
 
 						// Save product in the database
 						database.saveProduct(ean, product, function(statusCode)
@@ -99,13 +98,29 @@ exports.getProduct = function(ean, startIndex, callback)
 exports.storeProduct = function(ean, data, callback)
 {
 	data.gps = [data.gps];
-	data.prices = [parseFloat(data.price)];
+	data.prices = [{'price': parseFloat(data.price), 'gps': data.gps}];
 	delete data.price;
+	delete data.gps;
+
 	var photo = {};
 	photo.url = '';
 	photo.buffer = '';
+	if(data.buffer != undefined)
+	{
+		photo.buffer = data.buffer;
+	}
 	data.photo = photo;
-	data.types = data.types.split(',');
+
+	if(data.types != undefined)
+	{
+		data.types = data.types.split(',');
+	}
+
+	if(data.comment != undefined)
+	{
+		data.comments = [data.comment];
+		delete data.comment;
+	}
 
 	database.saveProduct(ean, data, function(statusCode)
 	{
@@ -138,9 +153,12 @@ exports.storeComment = function(ean, data, callback)
 */
 exports.storePrice = function(ean, data, callback)
 {
-	database.savePrice(ean, data, function(statusCode)
+	var price = {'price': parseFloat(data.price), 'gps': data.gps};
+	database.savePrice(ean, price, function(statusCode)
 	{
 		callback.call(this, statusCode);
+		// Free memory
+		price = null;
 	});
 }
 
@@ -192,7 +210,7 @@ function getPrixingProduct(ean, callback)
 */
 function commentsSlicer(data, startIndex)
 {
-	var dataParsed = JSON.parse(JSON.stringify(data));
+	var dataParsed = JSON.parse(data);
 	dataParsed.comments = dataParsed.comments.slice(startIndex, startIndex + 10);
 	return JSON.stringify(dataParsed);
 }

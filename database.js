@@ -56,7 +56,7 @@ exports.findAccount = function(username, callback)
 }
 /**
   * Function which adds a new user account into the database.
-  * Returns a token for the user 
+  * Returns a token for the user
   * @param username user username
   * @param password user password
   * @param email email address for the user
@@ -64,7 +64,7 @@ exports.findAccount = function(username, callback)
   * @param callback Callback function called when there is a result: (status)
 
   */
-exports.registerAccount = function(username, password, email, age, job, callback) 
+exports.registerAccount = function(username, password, email, age, job, callback)
 {
   //check if the account doesn't already exists
   exports.findAccount(username, function(result) {
@@ -75,7 +75,7 @@ exports.registerAccount = function(username, password, email, age, job, callback
       mongoose.connect(databaseUri);
       //hash the user password
       var hashedPassword = sha1.digest(username + password);
-       
+
       var accountSchema = new mongoose.Schema(
       {
         'username': String,
@@ -84,46 +84,46 @@ exports.registerAccount = function(username, password, email, age, job, callback
         'age': Number,
         'job': String
       });
-      
-      try 
+
+      try
       {
         module.exports = mongoose.model('account', accountSchema);
       }
-      catch (err) 
+      catch (err)
       {
         //the model has already been initialized
       }
-      //the account doesn't exists: we add it to the database    
-      var account = new module.exports({'username': username, 
+      //the account doesn't exists: we add it to the database
+      var account = new module.exports({'username': username,
                                        'password': hashedPassword,
                                        'email': email,
                                        'age': age,
                                        'job': job});
       account.save(function(err) {
-    		mongoose.connection.close();   
-    		if (err) 
+    		mongoose.connection.close();
+    		if (err)
     		{
 		      console.log(err);
-		      callback.call(this, 500);    		
+		      callback.call(this, 500);
     		}
     		else
     		{
     		  callback.call(this,200);
-        }     
+        }
         accountSchema = null;
         account = null;
-      });                                 
-                                       
+      });
+
     }
   });
-  
+
 }
- 
+
 /**
  * Function which retrieves a product from its ean ID
  * @param ean Product ID
  * @param callback Callback function calls when there is a result
-*/  
+*/
 exports.findProduct = function(ean, callback)
 {
 	mongoose.connect(databaseUri);
@@ -134,7 +134,6 @@ exports.findProduct = function(ean, callback)
 		'name': String,
 		'prices': Array,
 		'types': Array,
-		'gps': Array,
 		'description': String,
 		'photo': {
 			'url': String,
@@ -194,9 +193,9 @@ exports.saveProduct = function(ean, data, callback)
 	{
 		rating = data.rating;
 	}
-	if(data.comment != undefined)
+	if(data.comments != undefined)
 	{
-		comments[0] = data.comment;
+		comments = data.comments;
 	}
 	if(data.types != undefined)
 	{
@@ -215,7 +214,6 @@ exports.saveProduct = function(ean, data, callback)
 		'name': String,
 		'prices': Array,
 		'types': Array,
-		'gps': Array,
 		'description': String,
 		'photo': {
 			'url': String,
@@ -241,7 +239,6 @@ exports.saveProduct = function(ean, data, callback)
 		'name': data.name,
 		'prices': data.prices,
 		'types': types,
-		'gps': data.gps,
 		'description': description,
 		'photo': photo,
 		'rating': rating,
@@ -290,7 +287,6 @@ exports.saveComment = function(ean, data, callback)
 		'name': String,
 		'prices': Array,
 		'types': Array,
-		'gps': Array,
 		'description': String,
 		'photo': {
 			'url': String,
@@ -374,7 +370,6 @@ exports.savePrice = function(ean, data, callback)
 		'name': String,
 		'prices': Array,
 		'types': Array,
-		'gps': Array,
 		'description': String,
 		'photo': {
 			'url': String,
@@ -394,7 +389,7 @@ exports.savePrice = function(ean, data, callback)
 		// The model 'product' is already initialised
 	}
 
-	module.exports.update({'ean': ean}, {'$push': {'gps': data.gps, 'prices': parseFloat(data.price)}}, function(err)
+	module.exports.update({'ean': ean}, {'$push': {'prices': data}}, function(err)
 	{
 		mongoose.connection.close();
 		if(err)

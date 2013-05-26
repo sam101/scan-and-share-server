@@ -29,21 +29,22 @@ POST
                 "gps": String,
                 "description": String (optionnal),
                 "rating": Double ([0,5]) (optionnal),
-                "comment": String (optionnal),
+                "comment": {name: String, date: String, content: String} (optionnal),
                 "types": String[] (optionnal),
                 "photo": base64 (optionnal)
                }
-               body example => "name=test&description=test&price=0.5&gps=35.2:16.3&comment=toto&types=titi,tutu"
+               body example => "name=test&description=test&price=0.5&gps=35.2:16.3&comment[name]=toto&comment[date]=01/01/01&comment[content]=contenu&types=titi,tutu"
 * /ean?id=[]&comment {
                       "rating" : Double ([0,5]),
-                      "comment": String (optionnal)
+                      "comment": {name: String, date: String, content: String} (optionnal)
                      }
-                     body example = > "rating=2&comment=comment toto ti tutu"
+                     body example = > "rating=2&comment[name]=titi&comment[date]=02/02/02&comment[content]=contenu 2"
 * /ean?id=[]&price {
                       "price": Double,
                       "gps": String
                    }
                    body example => "price=2.3&gps=21.2:34.3"
-* /sales?id=[ID] : { "price": double,
+* /sales?id=[ID] : {
+                     "price": double,
                      "description" : String
                    }
