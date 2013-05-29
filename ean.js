@@ -26,7 +26,11 @@ exports.getProduct = function(ean, startIndex, callback)
 	// First we look for the product in the local database
 	database.findProduct(ean, null, function(result)
 	{
-		if(result != null || result.length != 0)
+		if(result == null)
+		{
+			callback.call(this, 404, '');
+		}
+		else if(result.length != 0)
 		{
 			callback.call(this, 200, commentsSlicer(JSON.stringify(result[0]), startIndex));
 		}
