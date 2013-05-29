@@ -11,6 +11,10 @@ GET
 * /login?username=[username]&password=[password] (token exchange)
 * /ean?id=[ID] (product info + 10 first comments)
 * /ean?id=[ID]&commentsstartindex=[N] (10 more comments about the product)
+* /ean?name=[NAME]
+* /ean?name=[NAME]&commentsstartindex=[N] (10 more comments about the product)
+* /ean?type=[TYPE]
+* /ean?type=[TYPE]&commentsstartindex=[N] (10 more comments about the product)
 * /sales (get the first 10 sales)
 * /sales?startindex=[N] (get the [N,N+10] sales)
 
