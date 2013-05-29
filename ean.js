@@ -16,6 +16,7 @@ var appKeyPrixing = 'ebe66fca00324b3a989b8a6a81d8e672';
 /**
  * Function which gets a product in the local database or in the Prixing database
  * @param ean The product ID
+ * @param startIndex The index of the array where we start the slicing
  * @param callback Callback function called when a product description (or not) is retrieved
 */
 exports.getProduct = function(ean, startIndex, callback)
@@ -23,9 +24,9 @@ exports.getProduct = function(ean, startIndex, callback)
 	var product = {};
 
 	// First we look for the product in the local database
-	database.findProduct(ean, function(result)
+	database.findProduct(ean, null, function(result)
 	{
-		if(result.length != 0)
+		if(result != null || result.length != 0)
 		{
 			callback.call(this, 200, commentsSlicer(JSON.stringify(result[0]), startIndex));
 		}
@@ -88,6 +89,56 @@ exports.getProduct = function(ean, startIndex, callback)
 		}
 	});
 }
+
+/**
+ * Function which gets a product by a part of its name
+ * @param query JSON containing informations passed in the URL
+ * @param startIndex The index of the array where we start the slicing
+ * @param callback The callback function called when we get a result
+*/
+exports.getProductByName = function(query, startIndex, callback)
+{
+	database.findProduct(null, query, function(result)
+	{
+		if(result == null || result.length == 0)
+		{
+			callback.call(this, 404, '');
+		}
+		else if(result.length != 0)
+		{
+			callback.call(this, 200, commentsSlicer(JSON.stringify(result[0]), startIndex));
+		}
+		else
+		{
+			callback.call(this, 404, '');
+		}
+	});
+};
+
+/**
+ * Function which gets a product from its type
+ * @param query JSON containing informations passed in the URL
+ * @param startIndex The index of the array where we start the slicing
+ * @param callback The callback function called when we get a result
+*/
+exports.getProductByType = function(query, startIndex, callback)
+{
+	database.findProduct(null, query, function(result)
+	{
+		if(result == null || result.length == 0)
+		{
+			callback.call(this, 404, '');
+		}
+		else if(result.length != 0)
+		{
+			callback.call(this, 200, commentsSlicer(JSON.stringify(result[0]), startIndex));
+		}
+		else
+		{
+			callback.call(this, 404, '');
+		}
+	});
+};
 
 /**
  * Function which store a new product in the database

@@ -124,7 +124,7 @@ exports.registerAccount = function(username, password, email, age, job, callback
  * @param ean Product ID
  * @param callback Callback function calls when there is a result
 */
-exports.findProduct = function(ean, callback)
+exports.findProduct = function(ean, query, callback)
 {
 	mongoose.connect(databaseUri);
 
@@ -153,21 +153,78 @@ exports.findProduct = function(ean, callback)
 		// The model 'product' is already initialised
 	}
 
-	module.exports.find({'ean': ean}, function (error, result)
+	if(ean != null)
 	{
-		mongoose.connection.close();
-
-		if(error)
+		// Query on the EAN ID of the product
+		module.exports.find({'ean': ean}, function (error, result)
 		{
-			console.log(error);
+			mongoose.connection.close();
+
+			if(error)
+			{
+				console.log(error);
+				callback.call(this, null);
+			}
+			else
+			{
+				callback.call(this, result);
+			}
+			// Free memory
+			productSchema = null;
+		});
+	}
+	else if(query != null)
+	{
+		if(query.name != undefined)
+		{
+			// Query on a product's name
+			module.exports.find({'name': {'$regex': query.name, '$options': 'i'}}, function (error, result)
+			{
+				mongoose.connection.close();
+
+				if(error)
+				{
+					console.log(error);
+					callback.call(this, null);
+				}
+				else
+				{
+					callback.call(this, result);
+				}
+				// Free memory
+				productSchema = null;
+			});
+		}
+		else if(query.type != undefined)
+		{
+			// Query on a product's type
+			module.exports.find({'types': {'$in': [query.type]}}, function (error, result)
+			{
+				mongoose.connection.close();
+
+				if(error)
+				{
+					console.log(error);
+					callback.call(this, null);
+				}
+				else
+				{
+					callback.call(this, result);
+				}
+				// Free memory
+				productSchema = null;
+			});
 		}
 		else
 		{
-			callback.call(this, result);
+			callback.call(this, null);
 		}
-		// Free memory
-		productSchema = null;
-	});
+	}
+	else
+	{
+		callback.call(this, null);
+	}
+
 };
 
 /**

@@ -36,7 +36,7 @@ app.get('/login', function (req, res)
   }
   else {
     res.statusCode = 404;
-    res.send();  
+    res.send();
   }
 });
 
@@ -49,7 +49,7 @@ app.get('/ean', function (req, res)
 		ean.getProduct(req.query.id, parseInt(req.query.commentsstartindex), function(statusCode, data)
 		{
 			res.statusCode = statusCode;
-			res.setHeader("Content-Type", "application/json");
+			res.setHeader("Content-Type", "application/json;charset=utf-8");
 			res.send(data);
 		});
 	}
@@ -59,9 +59,53 @@ app.get('/ean', function (req, res)
 		ean.getProduct(req.query.id, 0, function(statusCode, data)
 		{
 			res.statusCode = statusCode;
-			res.setHeader("Content-Type", "application/json");
+			res.setHeader("Content-Type", "application/json;charset=utf-8");
 			res.send(data);
 		});
+	}
+	else if(req.query.name != undefined)
+	{
+		// The user requests a product by its name
+		if(req.query.commentsstartindex != undefined)
+		{
+			ean.getProductByName(req.query, req.query.commentsstartindex, function(statusCode, data)
+			{
+				res.statusCode = statusCode;
+				res.setHeader("Content-Type", "application/json;charset=utf-8");
+				res.send(data);
+			});
+		}
+		else
+		{
+			ean.getProductByName(req.query, 0, function(statusCode, data)
+			{
+				res.statusCode = statusCode;
+				res.setHeader("Content-Type", "application/json;charset=utf-8");
+				res.send(data);
+			});
+		}
+	}
+	else if(req.query.type != undefined)
+	{
+		// The user requests a product by its type
+		if(req.query.commentsstartindex != undefined)
+		{
+			ean.getProductByType(req.query, req.query.commentsstartindex, function(statusCode, data)
+			{
+				res.statusCode = statusCode;
+				res.setHeader("Content-Type", "application/json;charset=utf-8");
+				res.send(data);
+			});
+		}
+		else
+		{
+			ean.getProductByType(req.query, 0, function(statusCode, data)
+			{
+				res.statusCode = statusCode;
+				res.setHeader("Content-Type", "application/json;charset=utf-8");
+				res.send(data);
+			});
+		}
 	}
 	else
 	{
