@@ -28,7 +28,6 @@ app.get('/login', function (req, res)
   if (req.query.username != undefined && req.query.password != undefined) {
     //the user wants to login: we return her the token if it is a success, a 403 error otherwise
     login.login(req.query.username, req.query.password, function(statusCode, data) {
-      console.log(statusCode, data);
       res.statusCode = statusCode;
 			res.setHeader("Content-Type", "application/json");
 			res.send(data);
