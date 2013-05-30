@@ -6,7 +6,27 @@ var crypto = require('crypto');
 var sha1 = crypto.createHash('sha1');
 
 var Tokauth = require('tokauth');
-
+var tokauth = new Tokauth(function(username) {
+  return true;
+});
+/**
+  * Generates a token using node-tokauth for a given user, 
+  * sets it as the current token in the database
+  * @param username user username to which we will generate a token
+  * @param callback callback to call when the token has been changed (status, token)
+  */
+exports.genToken = function(username, callback) 
+{
+  tokauth.key = username + (new Date()).getTime();
+  var token = tokauth.getToken(username);
+  
+  database.updateToken(username, token, function(status) {
+    if (status != 200) {
+      token = '';
+    }
+    callback.call(this, status, token);
+  });
+}
 /**
   * Function which checks if an user can be connected, and if so, returns 
   * a token for the user
@@ -29,8 +49,9 @@ exports.login = function(username, password, callback)
       var hashedPassword = sha1.digest(username + password);
       //Check if the password is correct
       if (hashedPassword == result.password) {
-        //TODO: generate the token
-        callback.call(this, 200, ' ');
+        exports.genToken(username, function(status, token) {
+          callback.call(this, status, token);        
+        });
       }
       else {
         callback.call(this, 403, ' ');

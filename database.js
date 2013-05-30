@@ -26,7 +26,8 @@ exports.findAccount = function(username, callback)
     'password': String,
     'email': String,
     'age': Number,
-    'job': String
+    'job': String,
+    'token': String
   });
   try
   {
@@ -53,6 +54,50 @@ exports.findAccount = function(username, callback)
     accountModel = null;
     accountSchema = null;
   });
+}
+/**
+  * Function which update the token associated to an user 
+  * @param username user username
+  * @param token new token to asscociate with the user
+  * @param callback Callback function called when there is a result (status)
+  */
+exports.updateToken = function(username, token, callback)
+{
+  mongoose.connect(databaseUri);
+  //TODO: Factorize the associated code
+  var accountSchema = new mongoose.Schema(
+  {
+    'username': String,
+    'password': String,
+    'email': String,
+    'age': Number,
+    'job': String,
+    'token': String
+  });
+  try
+{
+    // Model initialisation
+    module.exports = mongoose.model('account', accountSchema);
+  }
+  catch(error)
+  {
+    // The model 'account' is already initialised
+  }
+  
+  var update = {'$set': {'token': token} };
+  
+	module.exports.update({'username': username}, update, function(err)
+	{
+		mongoose.connection.close();
+		if(err)
+		{
+			callback.call(this, 500);
+		}
+		else
+		{
+			callback.call(this, 200);
+		}
+  });       
 }
 /**
   * Function which adds a new user account into the database.
@@ -82,7 +127,8 @@ exports.registerAccount = function(username, password, email, age, job, callback
         'password': String,
         'email': String,
         'age': Number,
-        'job': String
+        'job': String,
+        'token': String
       });
 
       try
