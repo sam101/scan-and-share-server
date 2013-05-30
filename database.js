@@ -8,8 +8,25 @@ var crypto = require('crypto');
 /************************************/
 var databaseUri = 'mongodb://localhost:27017/nf28_project';
 /************************************/
-/*			DATABASE QUERIES		*/
+/*      Models initialisation       */
 /************************************/
+function getSalesModel()
+{
+  var salesSchema = new mongoose.Schema(
+  {
+    'username': String,
+    'ean': String,
+    'description': String,
+    'date': Date
+  });
+  try 
+  {
+    this.model = mongoose.model('sales',salesSchema);
+  }  
+  catch (error) {}
+  
+  return this.model;
+}
 function getAccountModel()
 {
   var accountSchema = new mongoose.Schema(
@@ -32,6 +49,9 @@ function getAccountModel()
   }
   return this.model;
 }
+/************************************/
+/*			DATABASE QUERIES		*/
+/************************************/
 
 /**
   * Function which retrieves an account from its username
