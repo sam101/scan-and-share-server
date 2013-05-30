@@ -9,7 +9,17 @@ var Tokauth = require('tokauth');
 var tokauth = new Tokauth(function(username) {
   return true;
 });
-
+/**
+  * Checks if a token is the current token for an user
+  * @param token the token to check
+  * @param callback Callback function to call when the result has been retrieved
+  */
+exports.checkToken = function(token, callback)
+{
+  database.checkToken(token, function(ok, username) {
+    callback.call(this,ok,username);
+  });    
+}
 /**
   * Generates a token using node-tokauth for a given user, 
   * sets it as the current token in the database
@@ -20,7 +30,7 @@ exports.genToken = function(username, callback)
 {
   tokauth.key = username + (new Date()).getTime();
   var token = tokauth.getToken(username);
-  
+   
   database.updateToken(username, token, function(status) {
     if (status != 200) {
       token = '';

@@ -56,6 +56,41 @@ exports.findAccount = function(username, callback)
   });
 }
 /**
+  * Function which checks if a given token is associated to an user,
+  * returns the associated user (or null if there isn't one)
+  * @param token token to check
+  * @param callback Callback function called when there is a result (ok, username)
+  */  
+exports.checkToken = function(token, callback)
+{
+  mongoose.connect(databaseUri);
+  var accountSchema = new mongoose.Schema(
+  {
+    'username': String,
+    'password': String,
+    'email': String,
+    'age': Number,
+    'job': String,
+    'token': String
+  });
+  try
+  {
+    // Model initialisation
+    module.exports = mongoose.model('account', accountSchema);
+  }
+  catch(error) { }
+
+  module.exports.findOne({'token': token}, function(error, result)
+  {
+    if (result == null) {
+      callback.call(this,false,'');
+    }
+    else {
+      callback.call(this,true,result.username);
+    }
+  });
+}
+/**
   * Function which update the token associated to an user 
   * @param username user username
   * @param token new token to asscociate with the user
