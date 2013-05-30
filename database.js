@@ -74,6 +74,28 @@ exports.getSales = function(i, n, callback)
     }
   });
 }
+/** 
+  * Function which adds a sale to the database
+  * @param data JSON Data (username, ean, description, date) containing the sale data
+  * @param callback Callback function to call when the sale has been added to the database
+  * (or when errors occured)
+  */
+exports.addSale = function(data, callback) 
+{
+  mongoose.connect(databaseUri);
+  
+  var salesModel = getSalesModel();
+
+  var sale = new salesModel({'username': data.username,
+                             'ean': data.ean,
+                             'description': data.description,
+                             'date': data.date
+                            });
+  sale.save(function(err) {
+    mongoose.connection.close();
+    callback.call(this,err);
+  });
+}
 /**
   * Function which retrieves an account from its username
   * @param username username
