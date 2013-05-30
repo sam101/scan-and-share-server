@@ -117,8 +117,19 @@ app.get('/ean', function (req, res)
 // SALES request
 app.get('/sales', function (req, res)
 {
-	console.log(req.query);
-	res.send();
+  var i = 0, n = 10;
+  if (req.query.i != undefined) 
+  {
+    i = parseInt(req.query.i);
+  }
+  if (req.query.n != undefined) 
+  {
+    n = parseInt(req.query.n);
+  }
+  sales.getSales(i,n, function(statusCode, data) {
+		res.statusCode = statusCode;
+  	res.send(data);  
+  });
 });
 
 		/*		POST 	*/

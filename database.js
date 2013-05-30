@@ -52,7 +52,28 @@ function getAccountModel()
 /************************************/
 /*			DATABASE QUERIES		*/
 /************************************/
-
+/**
+  * Function which retrieves a list of sales from the database
+  * @param i index from which we retrieve the sales
+  * @param n number of sales we retrieve
+  * @param callback Callback function called when there is a result (error, result)
+  */
+exports.getSales = function(i, n, callback) 
+{
+  mongoose.connect(databaseUri);
+  var salesModel = getSalesModel();  
+  
+  salesModel.find({}, function(error, result) {
+    if (error) {
+      callback.call(this,error,null);
+    }
+    else {
+      //TODO: Not optimized at all.
+      mongoose.connection.close();
+      callback.call(this,error,result.slice(i,n));
+    }
+  });
+}
 /**
   * Function which retrieves an account from its username
   * @param username username
@@ -61,16 +82,6 @@ function getAccountModel()
 exports.findAccount = function(username, callback)
 {
   mongoose.connect(databaseUri);
-
-  var accountSchema = new mongoose.Schema(
-  {
-    'username': String,
-    'password': String,
-    'email': String,
-    'age': Number,
-    'job': String,
-    'token': String
-  });
   var accountModel = getAccountModel();
   
   accountModel.findOne({'username': username}, function(error, result)
