@@ -9,6 +9,7 @@ var Tokauth = require('tokauth');
 var tokauth = new Tokauth(function(username) {
   return true;
 });
+
 /**
   * Generates a token using node-tokauth for a given user, 
   * sets it as the current token in the database
@@ -50,7 +51,7 @@ exports.login = function(username, password, callback)
       //Check if the password is correct
       if (hashedPassword == result.password) {
         exports.genToken(username, function(status, token) {
-          callback.call(this, status, token);        
+          callback.call(this, status, {'token': token});        
         });
       }
       else {
