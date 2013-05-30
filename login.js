@@ -3,7 +3,6 @@
 /************************************/
 var database = require('./database.js');
 var crypto = require('crypto');
-var sha1 = crypto.createHash('sha1');
 
 var Tokauth = require('tokauth');
 var tokauth = new Tokauth(function(username) {
@@ -57,6 +56,7 @@ exports.login = function(username, password, callback)
     else 
     {
       //TODO: don't send he unhashed password into the network
+      var sha1 = crypto.createHash('sha1');
       var hashedPassword = sha1.digest(username + password);
       //Check if the password is correct
       if (hashedPassword == result.password) {
