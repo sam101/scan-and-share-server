@@ -3,7 +3,6 @@
 /************************************/
 var mongoose = require('mongoose');
 var crypto = require('crypto');
-var sha1 = crypto.createHash('sha1');
 /************************************/
 /*			PARAMETERS				*/
 /************************************/
@@ -154,7 +153,9 @@ exports.registerAccount = function(username, password, email, age, job, callback
     else {
       mongoose.connect(databaseUri);
       //hash the user password
-      var hashedPassword = sha1.digest(username + password);
+      var sha1 = crypto.createHash('sha1');
+      sha1.update(username + password);
+      var hashedPassword = sha1.digest('base64');
 
       var accountSchema = new mongoose.Schema(
       {

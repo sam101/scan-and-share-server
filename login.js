@@ -57,7 +57,8 @@ exports.login = function(username, password, callback)
     {
       //TODO: don't send he unhashed password into the network
       var sha1 = crypto.createHash('sha1');
-      var hashedPassword = sha1.digest(username + password);
+      sha1.update(username + password);
+      var hashedPassword = sha1.digest('base64');
       //Check if the password is correct
       if (hashedPassword == result.password) {
         exports.genToken(username, function(status, token) {
