@@ -10,6 +10,29 @@ var databaseUri = 'mongodb://localhost:27017/nf28_project';
 /************************************/
 /*			DATABASE QUERIES		*/
 /************************************/
+function getAccountModel()
+{
+  var accountSchema = new mongoose.Schema(
+  {
+    'username': String,
+    'password': String,
+    'email': String,
+    'age': Number,
+    'job': String,
+    'token': String
+  });
+  try
+  {
+    // Model initialisation
+    this.model = mongoose.model('account', accountSchema);
+  }
+  catch(error)
+  {
+    // The model 'account' is already initialised
+  }
+  return this.model;
+}
+
 /**
   * Function which retrieves an account from its username
   * @param username username
@@ -28,17 +51,9 @@ exports.findAccount = function(username, callback)
     'job': String,
     'token': String
   });
-  try
-  {
-    // Model initialisation
-    module.exports = mongoose.model('account', accountSchema);
-  }
-  catch(error)
-  {
-    // The model 'account' is already initialised
-  }
-
-  module.exports.findOne({'username': username}, function(error, result)
+  var accountModel = getAccountModel();
+  
+  accountModel.findOne({'username': username}, function(error, result)
   {
     mongoose.connection.close();
     if (error)
@@ -63,23 +78,9 @@ exports.findAccount = function(username, callback)
 exports.checkToken = function(token, callback)
 {
   mongoose.connect(databaseUri);
-  var accountSchema = new mongoose.Schema(
-  {
-    'username': String,
-    'password': String,
-    'email': String,
-    'age': Number,
-    'job': String,
-    'token': String
-  });
-  try
-  {
-    // Model initialisation
-    module.exports = mongoose.model('account', accountSchema);
-  }
-  catch(error) { }
-
-  module.exports.findOne({'token': token}, function(error, result)
+  var accountModel = getAccountModel();
+  
+  accountModel.findOne({'token': token}, function(error, result)
   {
     if (result == null) {
       callback.call(this,false,'');
@@ -98,29 +99,10 @@ exports.checkToken = function(token, callback)
 exports.updateToken = function(username, token, callback)
 {
   mongoose.connect(databaseUri);
-  //TODO: Factorize the associated code
-  var accountSchema = new mongoose.Schema(
-  {
-    'username': String,
-    'password': String,
-    'email': String,
-    'age': Number,
-    'job': String,
-    'token': String
-  });
-  try
-{
-    // Model initialisation
-    module.exports = mongoose.model('account', accountSchema);
-  }
-  catch(error)
-  {
-    // The model 'account' is already initialised
-  }
-  
+  var accountModel = getAccountModel();  
   var update = {'$set': {'token': token} };
   
-	module.exports.update({'username': username}, update, function(err)
+	accountModel.update({'username': username}, update, function(err)
 	{
 		mongoose.connection.close();
 		if(err)
@@ -156,27 +138,10 @@ exports.registerAccount = function(username, password, email, age, job, callback
       var sha1 = crypto.createHash('sha1');
       sha1.update(username + password);
       var hashedPassword = sha1.digest('base64');
-
-      var accountSchema = new mongoose.Schema(
-      {
-        'username': String,
-        'password': String,
-        'email': String,
-        'age': Number,
-        'job': String,
-        'token': String
-      });
-
-      try
-      {
-        module.exports = mongoose.model('account', accountSchema);
-      }
-      catch (err)
-      {
-        //the model has already been initialized
-      }
+      
+      var accountModel = getAccountModel();
       //the account doesn't exists: we add it to the database
-      var account = new module.exports({'username': username,
+      var account = new accountModel({'username': username,
                                        'password': hashedPassword,
                                        'email': email,
                                        'age': age,
