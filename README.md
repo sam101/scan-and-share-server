@@ -3,6 +3,13 @@ scan-and-share-server
 
 Server for Scan&amp;Share NF28 project
 
+Node module Dependencies
+============
+* express
+* mongoose
+* tokauth 
+
+
 REST API spec
 ==============
 
