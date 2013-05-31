@@ -7,7 +7,7 @@ Node module Dependencies
 ============
 * express
 * mongoose
-* tokauth 
+* tokauth
 
 
 REST API spec
@@ -16,12 +16,12 @@ REST API spec
 GET
 ---
 * /login?username=[username]&password=[password] (token exchange)
-* /ean?id=[ID] (product info + 10 first comments)
-* /ean?id=[ID]&commentsstartindex=[N] (10 more comments about the product)
-* /ean?name=[NAME]
-* /ean?name=[NAME]&commentsstartindex=[N] (10 more comments about the product)
-* /ean?type=[TYPE]
-* /ean?type=[TYPE]&commentsstartindex=[N] (10 more comments about the product)
+* /product?id=[ID] (product info + 10 first comments)
+* /product?id=[ID]&commentsstartindex=[N] (10 more comments about the product)
+* /product?name=[NAME]
+* /product?name=[NAME]&commentsstartindex=[N] (10 more comments about the product)
+* /product?type=[TYPE]
+* /product?type=[TYPE]&commentsstartindex=[N] (10 more comments about the product)
 * /sales (get the first 10 sales)
 * /sales?startindex=[N] (get the [N,N+10] sales)
 
@@ -34,7 +34,7 @@ POST
                 "age" : double,
                 "job" : String
               }
-* /ean?id=[ID] : {
+* /product?id=[ID] : {
                 "name" : String,
                 "price" : double,
                 "gps": String,
@@ -45,12 +45,12 @@ POST
                 "photo": base64 (optionnal)
                }
                body example => "name=test&description=test&price=0.5&gps=35.2:16.3&comment[name]=toto&comment[date]=01/01/01&comment[content]=contenu&types=titi,tutu"
-* /ean?id=[]&comment {
+* /product?id=[]&comment {
                       "rating" : Double ([0,5]),
                       "comment": {name: String, date: String, content: String} (optionnal)
                      }
                      body example = > "rating=2&comment[name]=titi&comment[date]=02/02/02&comment[content]=contenu 2"
-* /ean?id=[]&price {
+* /product?id=[]&price {
                       "price": Double,
                       "gps": String
                    }

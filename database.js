@@ -3,13 +3,16 @@
 /************************************/
 var mongoose = require('mongoose');
 var crypto = require('crypto');
+
 /************************************/
 /*			PARAMETERS				*/
 /************************************/
 var databaseUri = 'mongodb://localhost:27017/nf28_project';
+
 /************************************/
 /*      Models initialisation       */
 /************************************/
+
 function getSalesModel()
 {
   var salesSchema = new mongoose.Schema(
@@ -19,14 +22,15 @@ function getSalesModel()
     'description': String,
     'date': Date
   });
-  try 
+  try
   {
     this.model = mongoose.model('sales',salesSchema);
-  }  
+  }
   catch (error) {}
-  
+
   return this.model;
 }
+
 function getAccountModel()
 {
   var accountSchema = new mongoose.Schema(
@@ -49,6 +53,8 @@ function getAccountModel()
   }
   return this.model;
 }
+
+
 /************************************/
 /*			DATABASE QUERIES		*/
 /************************************/
@@ -58,11 +64,11 @@ function getAccountModel()
   * @param n number of sales we retrieve
   * @param callback Callback function called when there is a result (error, result)
   */
-exports.getSales = function(i, n, callback) 
+exports.getSales = function(i, n, callback)
 {
   mongoose.connect(databaseUri);
-  var salesModel = getSalesModel();  
-  
+  var salesModel = getSalesModel();
+
   salesModel.find({}, function(error, result) {
     if (error) {
       callback.call(this,error,null);
@@ -74,16 +80,16 @@ exports.getSales = function(i, n, callback)
     }
   });
 }
-/** 
+/**
   * Function which adds a sale to the database
   * @param data JSON Data (username, ean, description, date) containing the sale data
   * @param callback Callback function to call when the sale has been added to the database
   * (or when errors occured)
   */
-exports.addSale = function(data, callback) 
+exports.addSale = function(data, callback)
 {
   mongoose.connect(databaseUri);
-  
+
   var salesModel = getSalesModel();
 
   var sale = new salesModel({'username': data.username,
@@ -105,7 +111,7 @@ exports.findAccount = function(username, callback)
 {
   mongoose.connect(databaseUri);
   var accountModel = getAccountModel();
-  
+
   accountModel.findOne({'username': username}, function(error, result)
   {
     mongoose.connection.close();
@@ -127,12 +133,12 @@ exports.findAccount = function(username, callback)
   * returns the associated user (or null if there isn't one)
   * @param token token to check
   * @param callback Callback function called when there is a result (ok, username)
-  */  
+  */
 exports.checkToken = function(token, callback)
 {
   mongoose.connect(databaseUri);
   var accountModel = getAccountModel();
-  
+
   accountModel.findOne({'token': token}, function(error, result)
   {
     if (result == null) {
@@ -144,7 +150,7 @@ exports.checkToken = function(token, callback)
   });
 }
 /**
-  * Function which update the token associated to an user 
+  * Function which update the token associated to an user
   * @param username user username
   * @param token new token to asscociate with the user
   * @param callback Callback function called when there is a result (status)
@@ -152,9 +158,9 @@ exports.checkToken = function(token, callback)
 exports.updateToken = function(username, token, callback)
 {
   mongoose.connect(databaseUri);
-  var accountModel = getAccountModel();  
+  var accountModel = getAccountModel();
   var update = {'$set': {'token': token} };
-  
+
 	accountModel.update({'username': username}, update, function(err)
 	{
 		mongoose.connection.close();
@@ -166,7 +172,7 @@ exports.updateToken = function(username, token, callback)
 		{
 			callback.call(this, 200);
 		}
-  });       
+  });
 }
 /**
   * Function which adds a new user account into the database.
@@ -191,7 +197,7 @@ exports.registerAccount = function(username, password, email, age, job, callback
       var sha1 = crypto.createHash('sha1');
       sha1.update(username + password);
       var hashedPassword = sha1.digest('base64');
-      
+
       var accountModel = getAccountModel();
       //the account doesn't exists: we add it to the database
       var account = new accountModel({'username': username,

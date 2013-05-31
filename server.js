@@ -40,7 +40,7 @@ app.get('/login', function (req, res)
 });
 
 // PRODUCT request
-app.get('/ean', function (req, res)
+app.get('/product', function (req, res)
 {
 	if(req.query.id != undefined && req.query.commentsstartindex != undefined)
 	{
@@ -118,17 +118,17 @@ app.get('/ean', function (req, res)
 app.get('/sales', function (req, res)
 {
   var i = 0, n = 10;
-  if (req.query.i != undefined) 
+  if (req.query.i != undefined)
   {
     i = parseInt(req.query.i);
   }
-  if (req.query.n != undefined) 
+  if (req.query.n != undefined)
   {
     n = parseInt(req.query.n);
   }
   sales.getSales(i,n, function(statusCode, data) {
 		res.statusCode = statusCode;
-  	res.send(data);  
+  	res.send(data);
   });
 });
 
@@ -143,7 +143,7 @@ app.post('/register', function (req, res)
 });
 
 // PRODUCT REQUEST
-app.post('/ean', function (req, res)
+app.post('/product', function (req, res)
 {
 	if(req.query.id != undefined && req.query.comment != undefined)
 	{
