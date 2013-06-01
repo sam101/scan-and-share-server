@@ -118,9 +118,9 @@ app.get('/product', function (req, res)
 app.get('/sales', function (req, res)
 {
   var i = 0, n = 10;
-  if (req.query.i != undefined)
+  if (req.query.startindex != undefined)
   {
-    i = parseInt(req.query.i);
+    i = parseInt(req.query.startindex);
   }
   if (req.query.n != undefined)
   {
