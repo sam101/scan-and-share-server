@@ -110,7 +110,16 @@ exports.getProductByName = function(query, startIndex, callback)
 		}
 		else if(result.length != 0)
 		{
-			callback.call(this, 200, commentsSlicer(JSON.stringify(result[0]), startIndex));
+			var resultJSON = { 'result': [] };
+			for(var i = 0; i < result.length; i++)
+			{
+				resultJSON.result.push(JSON.parse(commentsSlicer(JSON.stringify(result[i])), 0));
+			}
+
+			callback.call(this, 200, JSON.stringify(resultJSON), startIndex);
+
+			// Free memory
+			resultJSON = null;
 		}
 		else
 		{
@@ -135,7 +144,16 @@ exports.getProductByType = function(query, startIndex, callback)
 		}
 		else if(result.length != 0)
 		{
-			callback.call(this, 200, commentsSlicer(JSON.stringify(result[0]), startIndex));
+			var resultJSON = { 'result': [] };
+			for(var i = 0; i < result.length; i++)
+			{
+				resultJSON.result.push(JSON.parse(commentsSlicer(JSON.stringify(result[i])), 0));
+			}
+
+			callback.call(this, 200, JSON.stringify(resultJSON));
+
+			// Free memory
+			resultJSON = null;
 		}
 		else
 		{
