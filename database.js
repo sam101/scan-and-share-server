@@ -96,6 +96,7 @@ exports.addSale = function(data, callback)
     callback.call(this,err);
   });
 }
+
 /**
   * Function which retrieves an account from its username
   * @param username username

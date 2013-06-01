@@ -51,7 +51,7 @@ exports.login = function(username, password, callback)
      * username in the database */
     if (result == null) 
     {
-      callback.call(this, 403, ' ');
+      callback.call(this, 401, ' ');
     }
     else 
     {
@@ -66,7 +66,7 @@ exports.login = function(username, password, callback)
         });
       }
       else {
-        callback.call(this, 403, ' ');
+        callback.call(this, 401, ' ');
       }
     }
   });    
