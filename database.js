@@ -285,7 +285,7 @@ exports.findProduct = function(ean, query, callback)
 		if(query.name != undefined)
 		{
 			// Query on a product's name
-			module.exports.find({'name': {'$regex': query.name, '$options': 'i'}}, function (error, result)
+			module.exports.find({'$or': [{'name': {'$regex': query.name, '$options': 'i'}}, {'description': {'$regex': query.name, '$options': 'i'}}]}, function (error, result)
 			{
 				mongoose.connection.close();
 

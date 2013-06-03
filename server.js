@@ -65,46 +65,22 @@ app.get('/product', function (req, res)
 	else if(req.query.name != undefined)
 	{
 		// The user requests a product by its name
-		if(req.query.commentsstartindex != undefined)
+		ean.getProductByName(req.query, function(statusCode, data)
 		{
-			ean.getProductByName(req.query, req.query.commentsstartindex, function(statusCode, data)
-			{
-				res.statusCode = statusCode;
-				res.setHeader("Content-Type", "application/json;charset=utf-8");
-				res.send(data);
-			});
-		}
-		else
-		{
-			ean.getProductByName(req.query, 0, function(statusCode, data)
-			{
-				res.statusCode = statusCode;
-				res.setHeader("Content-Type", "application/json;charset=utf-8");
-				res.send(data);
-			});
-		}
+			res.statusCode = statusCode;
+			res.setHeader("Content-Type", "application/json;charset=utf-8");
+			res.send(data);
+		});
 	}
 	else if(req.query.type != undefined)
 	{
 		// The user requests a product by its type
-		if(req.query.commentsstartindex != undefined)
+		ean.getProductByType(req.query, function(statusCode, data)
 		{
-			ean.getProductByType(req.query, req.query.commentsstartindex, function(statusCode, data)
-			{
-				res.statusCode = statusCode;
-				res.setHeader("Content-Type", "application/json;charset=utf-8");
-				res.send(data);
-			});
-		}
-		else
-		{
-			ean.getProductByType(req.query, 0, function(statusCode, data)
-			{
-				res.statusCode = statusCode;
-				res.setHeader("Content-Type", "application/json;charset=utf-8");
-				res.send(data);
-			});
-		}
+			res.statusCode = statusCode;
+			res.setHeader("Content-Type", "application/json;charset=utf-8");
+			res.send(data);
+		});
 	}
 	else
 	{

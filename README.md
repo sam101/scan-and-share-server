@@ -19,9 +19,7 @@ GET
 * /product?id=[ID] (product info + 10 first comments)
 * /product?id=[ID]&commentsstartindex=[N] (10 more comments about the product)
 * /product?name=[NAME]
-* /product?name=[NAME]&commentsstartindex=[N] (10 more comments about the product)
 * /product?type=[TYPE]
-* /product?type=[TYPE]&commentsstartindex=[N] (10 more comments about the product)
 * /sales (get the first 10 sales)
 * /sales?startindex=[N] (get the [N,N+10] sales)
 

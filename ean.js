@@ -100,7 +100,7 @@ exports.getProduct = function(ean, startIndex, callback)
  * @param startIndex The index of the array where we start the slicing
  * @param callback The callback function called when we get a result
 */
-exports.getProductByName = function(query, startIndex, callback)
+exports.getProductByName = function(query, callback)
 {
 	database.findProduct(null, query, function(result)
 	{
@@ -116,7 +116,7 @@ exports.getProductByName = function(query, startIndex, callback)
 				resultJSON.result.push(JSON.parse(commentsSlicer(JSON.stringify(result[i])), 0));
 			}
 
-			callback.call(this, 200, JSON.stringify(resultJSON), startIndex);
+			callback.call(this, 200, JSON.stringify(resultJSON));
 
 			// Free memory
 			resultJSON = null;
@@ -134,7 +134,7 @@ exports.getProductByName = function(query, startIndex, callback)
  * @param startIndex The index of the array where we start the slicing
  * @param callback The callback function called when we get a result
 */
-exports.getProductByType = function(query, startIndex, callback)
+exports.getProductByType = function(query, callback)
 {
 	database.findProduct(null, query, function(result)
 	{
