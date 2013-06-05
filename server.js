@@ -113,14 +113,17 @@ app.get('/sales', function (req, res)
 // REGISTER request
 app.post('/register', function (req, res)
 {
-  console.log(req.query);
+    console.log(req.query);
 	console.log(req.body);
+	res.setHeader("Content-Type", "application/json;charset=utf-8");
 	res.send();
 });
 
 // PRODUCT REQUEST
 app.post('/product', function (req, res)
 {
+	res.setHeader("Content-Type", "application/json;charset=utf-8");
+
 	if(req.query.id != undefined && req.query.comment != undefined)
 	{
 		ean.storeComment(req.query.id, req.body, function(statusCode)
