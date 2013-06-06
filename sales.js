@@ -38,10 +38,10 @@ exports.addSale = function(token, ean, data, callback)
       database.addSale(data, function(err) {
         if (err) {
           console.log(err);
-          callback.call(this,200); 
+          callback.call(this,403); 
         }
         else {
-          callback.call(this,403);
+          callback.call(this,200);
         }
       });
     
