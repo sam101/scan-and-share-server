@@ -3,7 +3,7 @@
 /************************************/
 var http = require('http');
 var database = require('./database.js');
-
+var login = require('./login.js');
 /************************************/
 /*			PARAMETERS				*/
 /************************************/
@@ -206,16 +206,28 @@ exports.storeProduct = function(ean, data, callback)
 
 /**
  * Function which stores a new comment in the database
+ * @param token User token who wants to add the comment
  * @param ean The product ID
  * @param data JSON containing the rating and the comment
  * @param callback The callback function called when the new comment is saved
 */
-exports.storeComment = function(ean, data, callback)
+exports.storeComment = function(token, ean, data, callback)
 {
-	database.saveComment(ean, data, function(statusCode)
-	{
-		callback.call(this, statusCode);
-	});
+  login.checkToken(token, function(error, username) {
+    if (username == null) 
+    {
+      callback.call(this,401);      
+    }
+    else 
+    {
+      data.name = username;
+	    database.saveComment(ean, data, function(statusCode)
+	    {
+		    callback.call(this, statusCode);
+	    });
+    
+    }
+  });
 }
 
 /**

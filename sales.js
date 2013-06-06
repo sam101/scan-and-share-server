@@ -12,10 +12,12 @@ var login = require('./login.js');
 exports.getSales = function(i, n, callback) 
 { 
   database.getSales(i,n, function(error, data) {
-    if (error) {
+    if (error) 
+    {
       callback.call(this,500,' ');
     }
-    else {
+    else 
+    {
       callback.call(this,200,data);    
     }
   });
@@ -30,18 +32,23 @@ exports.getSales = function(i, n, callback)
 exports.addSale = function(token, ean, data, callback) 
 {
   login.checkToken(token, function(error, username) {
-    if (username == null) {
+    if (username == null) 
+    {
       callback.call(this,401);      
     }
-    else {
+    else 
+    {
       data.username = username;
       data.ean = ean;
-      database.addSale(data, function(err) {
-        if (err) {
+      database.addSale(data, function(err) 
+      {
+        if (err) 
+        {
           console.log(err);
           callback.call(this,403); 
         }
-        else {
+        else 
+        {
           callback.call(this,200);
         }
       });

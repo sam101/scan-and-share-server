@@ -43,11 +43,11 @@ POST
                 "photo": base64 (optionnal)
                }
                body example => "name=test&description=test&price=0.5&gps=35.2:16.3&comment[name]=toto&comment[date]=01/01/01&comment[content]=contenu&types=titi,tutu"
-* /product?id=[]&comment {
+* /product?id=[]&comment&token=[TOKEN] {
                       "rating" : Double ([0,5]),
                       "comment": {name: String, date: String, content: String} (optionnal)
                      }
-                     body example = > "rating=2&comment[name]=titi&comment[date]=02/02/02&comment[content]=contenu 2"
+                     body example = > "rating=2&comment[date]=02/02/02&comment[content]=contenu 2"
 * /product?id=[]&price {
                       "price": Double,
                       "gps": String
