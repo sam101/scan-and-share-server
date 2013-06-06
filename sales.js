@@ -29,16 +29,22 @@ exports.getSales = function(i, n, callback)
 exports.addSale = function(token, ean, data, callback) 
 {
   database.checkToken(token, function(error, username) {
-    data.username = username;
-    data.ean = ean;
-    database.addSale(data, function(err) {
-      if (err) {
-        callback.call(this,200); 
-      }
-      else {
-        callback.call(this,403);
-      }
-    });  
-
-  });
+    if (username == null) {
+      callback.call(this,401);      
+    }
+    else {
+      data.username = username;
+      data.ean = ean;
+      database.addSale(data, function(err) {
+        if (err) {
+          console.log(err);
+          callback.call(this,200); 
+        }
+        else {
+          callback.call(this,403);
+        }
+      });
+    
+    }
+  });  
 }
