@@ -487,7 +487,7 @@ exports.saveComment = function(ean, data, callback)
 			}
 			var update = {};
 
-			if(data.comment != undefined)
+			if(data.comment != undefined && (data.comment.name != undefined && data.comment.date != undefined && data.comment.content != undefined))
 			{
 				update = {'$push': {'comments': data.comment}, '$set': {'rating': rating}};
 			}
