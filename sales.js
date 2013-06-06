@@ -22,7 +22,7 @@ exports.getSales = function(i, n, callback)
 /**
  * Function which adds a sale to the database
  * @param token 
- * @param data JSON Data (description, date) containing the sale data
+ * @param data JSON Data (description, date, price) containing the sale data
  * @param callback Callback function to call when the sale has been added to 
  * the database (or when errors have occured)
  */

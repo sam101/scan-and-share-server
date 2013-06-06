@@ -53,7 +53,7 @@ POST
                       "gps": String
                    }
                    body example => "price=2.3&gps=21.2:34.3"
-* /sales?id=[ID] : {
+* /sales?id=[ID]&token=[TOKEN] : {
                      "price": double,
                      "description" : String,
                      "date": String                     

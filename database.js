@@ -82,7 +82,7 @@ exports.getSales = function(i, n, callback)
 }
 /**
   * Function which adds a sale to the database
-  * @param data JSON Data (username, ean, description, date) containing the sale data
+  * @param data JSON Data (username, ean, description, date, price) containing the sale data
   * @param callback Callback function to call when the sale has been added to the database
   * (or when errors occured)
   */
@@ -95,7 +95,8 @@ exports.addSale = function(data, callback)
   var sale = new salesModel({'username': data.username,
                              'ean': data.ean,
                              'description': data.description,
-                             'date': data.date
+                             'date': data.date,
+                             'price': data.price
                             });
   sale.save(function(err) {
     mongoose.connection.close();
