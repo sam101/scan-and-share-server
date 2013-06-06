@@ -22,7 +22,7 @@ GET
 * /product?type=[TYPE]
 * /sales (get the first 10 sales)
 * /sales?startindex=[N] (get the [N,N+10] sales)
-
+* /sales?id=[EAN]
 
 POST
 ----
