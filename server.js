@@ -123,7 +123,6 @@ app.post('/register', function (req, res)
 app.post('/product', function (req, res)
 {
 	res.setHeader("Content-Type", "application/json;charset=utf-8");
-
 	if(req.query.id != undefined && req.query.comment != undefined)
 	{
 		ean.storeComment(req.query.id, req.body, function(statusCode)
@@ -135,7 +134,7 @@ app.post('/product', function (req, res)
 	{
 		ean.storePrice(req.query.id, req.body, function(statusCode)
 		{
-			res.statusCode = statusCode;
+			res.statusCode = statusCode;  
 		});
 	}
 	else if(req.query.id != undefined)
@@ -155,9 +154,10 @@ app.post('/product', function (req, res)
 // PRODUCT REQUEST
 app.post('/sales', function (req, res)
 {
-	console.log(req.query);
-	console.log(req.body);
-	res.send();
+  sales.addSale(req.query.token,req.query.id,req.body, function(statusCode) {
+  	res.statusCode = statusCode;
+  	res.send();  
+  });
 });
 
 app.listen(port);

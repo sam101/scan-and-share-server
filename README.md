@@ -55,5 +55,7 @@ POST
                    body example => "price=2.3&gps=21.2:34.3"
 * /sales?id=[ID] : {
                      "price": double,
-                     "description" : String
+                     "description" : String,
+                     "date": String                     
                    }
+*                    

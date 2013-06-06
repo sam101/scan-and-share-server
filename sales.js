@@ -19,3 +19,26 @@ exports.getSales = function(i, n, callback)
     }
   });
 }
+/**
+ * Function which adds a sale to the database
+ * @param token 
+ * @param data JSON Data (description, date) containing the sale data
+ * @param callback Callback function to call when the sale has been added to 
+ * the database (or when errors have occured)
+ */
+exports.addSale = function(token, ean, data, callback) 
+{
+  database.checkToken(token, function(error, username) {
+    data.username = username;
+    data.ean = ean;
+    database.addSale(data, function(err) {
+      if (err) {
+        callback.call(this,200); 
+      }
+      else {
+        callback.call(this,403);
+      }
+    });  
+
+  });
+}
