@@ -142,6 +142,7 @@ exports.checkToken = function(token, callback)
 
   accountModel.findOne({'token': token}, function(error, result)
   {
+    mongoose.connection.close();
     if (result == null) {
       callback.call(this,false,'');
     }
