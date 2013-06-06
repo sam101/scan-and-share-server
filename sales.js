@@ -2,6 +2,7 @@
 /*			REQUIRES				*/
 /************************************/
 var database = require('./database.js');
+var login = require('./login.js');
 /**
   * Function which retrieves a list of sales
   * @param i index from which we retrieve the sales
@@ -28,7 +29,7 @@ exports.getSales = function(i, n, callback)
  */
 exports.addSale = function(token, ean, data, callback) 
 {
-  database.checkToken(token, function(error, username) {
+  login.checkToken(token, function(error, username) {
     if (username == null) {
       callback.call(this,401);      
     }
