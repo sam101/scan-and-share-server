@@ -154,11 +154,15 @@ app.post('/product', function (req, res)
 // PRODUCT REQUEST
 app.post('/sales', function (req, res)
 {
-  if (req.query.id != undefined && req.query.token != undefined && req.data.
-  sales.addSale(req.query.token,req.query.id,req.body, function(statusCode) {
-  	res.statusCode = statusCode;
-  	res.send();  
-  });
+  if (req.query.id != undefined && req.query.token != undefined && 
+      req.data.price != undefined && req.data.description != undefined &&
+      req.data.date != undefined) {
+      
+    sales.addSale(req.query.token,req.query.id,req.body, function(statusCode) {
+    	res.statusCode = statusCode;
+    	res.send();  
+    });
+  }
 });
 
 app.listen(port);
