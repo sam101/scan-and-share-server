@@ -123,21 +123,21 @@ app.post('/register', function (req, res)
 app.post('/product', function (req, res)
 {
 	res.setHeader("Content-Type", "application/json;charset=utf-8");
-	if(req.query.id != undefined && req.query.comment == undefined && req.query.rating != undefined)
+	if(req.query.id != undefined && req.body.comment == undefined && req.body.rating != undefined)
 	{
-		ean.storeRating(req.query.token, req.query.id,  req.body, function(statusCode)
+		ean.storeRating(req.query.id,  req.body, function(statusCode)
 		{
 			res.statusCode = statusCode;
 		});	  
 	}
-	else if(req.query.id != undefined && req.query.comment != undefined && req.query.token != undefined)
+	else if(req.query.id != undefined && req.body.comment != undefined && req.query.token != undefined)
 	{
 		ean.storeComment(req.query.token, req.query.id,  req.body, function(statusCode)
 		{
 			res.statusCode = statusCode;
 		});
 	}
-	else if(req.query.id != undefined && req.query.price != undefined)
+	else if(req.query.id != undefined && req.body.price != undefined)
 	{
 		ean.storePrice(req.query.id, req.body, function(statusCode)
 		{
