@@ -220,7 +220,10 @@ exports.storeComment = function(token, ean, data, callback)
     }
     else 
     {
-      data.comment.name = username;
+      if (data.comment != undefined) 
+      {
+        data.comment.name = username;
+      }
 	    database.saveComment(ean, data, function(statusCode)
 	    {
 		    callback.call(this, statusCode);
