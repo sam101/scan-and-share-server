@@ -203,7 +203,19 @@ exports.storeProduct = function(ean, data, callback)
 		photo = null;
 	});
 }
-
+/**
+  * Function which stores a rating in the database
+ * @param ean The product ID
+ * @param data JSON containing the rating and the comment
+ * @param callback The callback function called when the new comment is saved
+ */
+exports.storeRating = function(ean, data, callback) 
+{
+  database.saveComment(ean, data, function(statusCode)
+  {
+    callback.call(this, statusCode);
+  });
+}
 /**
  * Function which stores a new comment in the database
  * @param token User token who wants to add the comment
@@ -220,10 +232,7 @@ exports.storeComment = function(token, ean, data, callback)
     }
     else 
     {
-      if (data.comment != undefined) 
-      {
-        data.comment.name = username;
-      }
+      data.comment.name = username;
 	    database.saveComment(ean, data, function(statusCode)
 	    {
 		    callback.call(this, statusCode);

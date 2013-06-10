@@ -123,7 +123,14 @@ app.post('/register', function (req, res)
 app.post('/product', function (req, res)
 {
 	res.setHeader("Content-Type", "application/json;charset=utf-8");
-	if(req.query.id != undefined && req.query.comment != undefined && req.query.token != undefined)
+	if(req.query.id != undefined && req.query.comment == undefined && req.query.rating != undefined)
+	{
+		ean.storeRating(req.query.token, req.query.id,  req.body, function(statusCode)
+		{
+			res.statusCode = statusCode;
+		});	  
+	}
+	else if(req.query.id != undefined && req.query.comment != undefined && req.query.token != undefined)
 	{
 		ean.storeComment(req.query.token, req.query.id,  req.body, function(statusCode)
 		{
