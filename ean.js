@@ -49,7 +49,7 @@ exports.getProduct = function(ean, startIndex, callback)
 					// We format the result to store it in the local database and to send it to the client
 					var prixingProduct = JSON.parse(result);
 
-					if(prixingProduct.code >= 400)
+					if(prixingProduct.code >= 400 || prixingProduct.produit.marque == undefined || prixingProduct.produit.titre == undefined)
 					{
 						callback.call(this, 404, '');
 					}
@@ -209,7 +209,7 @@ exports.storeProduct = function(ean, data, callback)
  * @param data JSON containing the rating and the comment
  * @param callback The callback function called when the new comment is saved
  */
-exports.storeRating = function(ean, data, callback) 
+exports.storeRating = function(ean, data, callback)
 {
   database.saveComment(ean, data, function(statusCode)
   {
@@ -226,18 +226,18 @@ exports.storeRating = function(ean, data, callback)
 exports.storeComment = function(token, ean, data, callback)
 {
   login.checkToken(token, function(error, username) {
-    if (username == null) 
+    if (username == null)
     {
-      callback.call(this,401);      
+      callback.call(this,401);
     }
-    else 
+    else
     {
       data.comment.name = username;
 	    database.saveComment(ean, data, function(statusCode)
 	    {
 		    callback.call(this, statusCode);
 	    });
-    
+
     }
   });
 }
